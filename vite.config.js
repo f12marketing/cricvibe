@@ -8,12 +8,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
+        // Simple function-based chunking for maximum compatibility
+        manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'react-vendor';
-            if (id.includes('firebase')) return 'firebase-vendor';
-            if (id.includes('framer-motion') || id.includes('lucide-react')) return 'ui-vendor';
-            if (id.includes('recharts')) return 'chart-vendor';
+            if (id.includes('react')) return 'vendor';
+            if (id.includes('firebase')) return 'firebase';
+            if (id.includes('framer-motion') || id.includes('lucide-react')) return 'ui';
           }
         }
       }
