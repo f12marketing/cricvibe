@@ -2,21 +2,20 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
+/**
+ * CricVibe Production Configuration
+ * Optimized for Vite 8 + Rolldown + Node 20
+ */
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(), 
+    tailwindcss()
+  ],
   build: {
-    rollupOptions: {
-      output: {
-        // Simple function-based chunking for maximum compatibility
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'vendor';
-            if (id.includes('firebase')) return 'firebase';
-            if (id.includes('framer-motion') || id.includes('lucide-react')) return 'ui';
-          }
-        }
-      }
-    }
+    target: 'esnext',
+    // We rely on Vite 8's smart automatic chunking (Rolldown) 
+    // to avoid compatibility issues with manualChunks function types.
+    minify: 'esbuild',
+    sourcemap: false
   }
 })
