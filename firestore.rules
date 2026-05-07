@@ -1,0 +1,54 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper Functions ───────────────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    // ─── Users Collection ───────────────────────────────────────────────────
+    // Anyone authenticated can READ (needed for leaderboard).
+    // Users can only WRITE their own doc, and cannot touch IQ/rank fields
+    // (those are updated exclusively by Cloud Functions).
+    match /users/{uid} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid)
+                    && !request.resource.data.keys().hasAny(['totalIQ', 'globalRank']);
+      allow delete: if false;
+    }
+
+    // ─── Matches Collection ─────────────────────────────────────────────────
+    // Match documents are public-read (live scoreboard).
+    // Only Cloud Functions (admin SDK) can write.
+    match /matches/{matchId} {
+      allow read: if true;
+      allow write: if false;
+
+      // Submissions sub-collection — users can read/create their own only.
+      match /submissions/{submissionId} {
+        allow read: if isOwner(resource.data.userId);
+        allow create: if isOwner(request.resource.data.userId);
+        allow update, delete: if false;
+      }
+    }
+
+    // ─── Leaderboards Collection ────────────────────────────────────────────
+    // Public read. Cloud Functions write only.
+    match /leaderboards/{leaderboardId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ─── Match Events (legacy collection) ───────────────────────────────────
+    match /match_events/{eventId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
