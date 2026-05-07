@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Settings, Users, Activity, Play, FastForward, AlertCircle, RefreshCw, Database, Pause } from 'lucide-react';
 import { useMatchStore } from '../store/useMatchStore';
 import scriptData from '../lib/matchScript.json';
@@ -13,7 +13,8 @@ export default function AdminDashboard() {
     startSimulation
   } = useMatchStore();
 
-  const [activeUsers] = useState(Math.floor(Math.random() * 5000) + 12000);
+  // Fixed React purity issue by using a lazy initializer function
+  const [activeUsers] = useState(() => Math.floor(Math.random() * 5000) + 12000);
   const [resetting, setResetting] = useState(false);
 
   const handleResetLeaderboard = () => {
@@ -26,13 +27,13 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-12">
-      <div className="flex items-center justify-between glass-card p-4 sm:p-6 border-b-2 border-primary/30">
+      <div className="flex items-center justify-between glass-card p-6 border-b-2 border-primary/30">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30">
             <Settings className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-display font-bold text-white tracking-tight">Admin Console</h1>
+            <h1 className="text-2xl font-display font-bold text-white tracking-tight">Admin Console</h1>
             <p className="text-xs text-textMuted uppercase tracking-widest font-semibold">CricVibe Internal Operations</p>
           </div>
         </div>

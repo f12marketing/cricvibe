@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Play, TrendingUp, Trophy, ArrowRight, Activity, Power, Zap, Target } from 'lucide-react';
+import { Play, TrendingUp, Trophy, ArrowRight, Activity, Power } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import MatchCard from '../components/MatchCard';
 import { MatchCardSkeleton, LeaderboardRowSkeleton } from '../components/LoadingSkeleton';
@@ -42,7 +42,7 @@ export default function Dashboard() {
       clearTimeout(timer);
       stopSubscription();
     };
-  }, []);
+  }, [startLiveSubscription, stopSubscription]);
 
   const dynamicLiveMatch = {
     id: matchState.matchId || 'm1',
@@ -65,7 +65,6 @@ export default function Dashboard() {
       
       {/* ─── Hero Section ─── */}
       <motion.section variants={itemVariants} className="relative overflow-hidden rounded-2xl sm:rounded-3xl glass-card border-0">
-        {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <motion.div 
             animate={{ scale: [1, 1.03, 1] }}
@@ -83,14 +82,14 @@ export default function Dashboard() {
             transition={{ duration: 0.6 }}
             className="max-w-xl"
           >
-            <div className="badge-primary mb-4 sm:mb-6">
+            <div className="badge-primary mb-6">
               <Activity className="h-3 w-3 animate-pulse" /> Live Season
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-3 sm:mb-4 leading-[1.1]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-4 leading-[1.1]">
               Play the <br/>
               <span className="text-gradient">Captain's Mind</span>
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-textSecondary mb-5 sm:mb-8 font-light max-w-md leading-relaxed">
+            <p className="text-sm sm:text-lg text-textSecondary mb-8 font-light max-w-md leading-relaxed">
               The ultimate real-time tactical simulator. Anticipate moves, set the field, and outsmart the world.
             </p>
             <div className="flex flex-wrap items-center gap-3">
@@ -98,7 +97,7 @@ export default function Dashboard() {
                 <motion.button 
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className="btn-primary text-sm sm:text-base py-3 sm:py-3.5 px-6 sm:px-8 inline-flex items-center gap-2.5"
+                  className="btn-primary py-3.5 px-8 inline-flex items-center gap-2.5"
                 >
                   <Play className="h-5 w-5" fill="currentColor" />
                   Enter Hotseat
@@ -126,7 +125,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="w-full md:w-80 glass-card p-4 sm:p-6 border-t-2 border-t-primary/30 relative"
+            className="w-full md:w-80 glass-card p-6 border-t-2 border-t-primary/30 relative"
           >
             <div className="absolute -inset-1 bg-primary/[0.03] blur-2xl z-0 rounded-2xl" />
             <div className="relative z-10">
@@ -169,10 +168,8 @@ export default function Dashboard() {
       </motion.section>
 
       {/* ─── Match Lobby ─── */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
-          
-          {/* Live Matches */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
           <section>
             <h2 className="section-title mb-5">Live Action</h2>
             {loading ? (
@@ -189,7 +186,6 @@ export default function Dashboard() {
             )}
           </section>
 
-          {/* Upcoming */}
           <section>
             <div className="flex items-center justify-between mb-5">
               <h2 className="section-title">Upcoming Fixtures</h2>
@@ -203,7 +199,7 @@ export default function Dashboard() {
             ) : (
               <div className="flex overflow-x-auto gap-4 pb-2 snap-x hide-scrollbar">
                 {mockUpcomingMatches.map(match => (
-                  <div key={match.id} className="min-w-[260px] sm:min-w-[300px] lg:min-w-[340px] snap-start">
+                  <div key={match.id} className="min-w-[260px] sm:min-w-[340px] snap-start">
                     <MatchCard match={match} isLive={false} />
                   </div>
                 ))}
@@ -212,14 +208,14 @@ export default function Dashboard() {
           </section>
         </div>
 
-        {/* ─── Leaderboard Sidebar ─── */}
+        {/* Leaderboard Sidebar */}
         <section className="glass-card flex flex-col border-t-2 border-t-secondary/30">
           <div className="p-5 border-b border-border flex justify-between items-center">
             <h2 className="text-base font-display font-bold uppercase tracking-wider flex items-center gap-2">
               <Trophy className="h-4 w-4 text-secondary" />
               Top Captains
             </h2>
-            <Link to="/leaderboard" className="text-xs text-textMuted hover:text-textSecondary transition-colors font-medium">
+            <Link to="/leaderboard" className="text-xs text-textMuted hover:text-textSecondary font-medium">
               Full Rankings
             </Link>
           </div>
@@ -271,7 +267,7 @@ export default function Dashboard() {
             </Link>
           </div>
         </section>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
